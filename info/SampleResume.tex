@@ -1,0 +1,222 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+\usepackage{fontawesome}
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%----------HEADING----------
+
+\begin{center}
+    \textbf{\Huge \scshape Zixiang(Zack) Hu} \\ \vspace{1pt}
+    {(672) 338-6762} $|$ 
+    \href{https://zackhu.com/}{zackhu.com} $|$ 
+    \href{mailto:zackhu2001@gmail.com}{\faEnvelope\ zackhu2001@gmail.com} $|$ 
+    \href{https://github.com/ZackHu-2001}{\faGithub\ ZackHu-2001} $|$
+    \href{https://www.linkedin.com/in/zixiang-hu/}{\faLinkedin\ Zack Hu}
+\end{center}
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Fullstack Software Engineer}{Vancouver, Feb. 2025 -- Sep.2025}{D3 Security}{TypeScript, c\#, .NET, React, SQL Server}
+        \resumeItemListStart
+        % \resumeItem{Developed scalable enterprise applications using \textbf{C\#}, \textbf{.NET 8}, \textbf{React}, following \textbf{Domain-Driven Design}.}
+        % \resumeItem{Encapsulated complex query logic into \textbf{SQL Server stored procedures} to boost performance by 20\%, enhance data security through parameterized access, and increase \textbf{maintainability} with centralized code management.}
+        % \resumeItem{Achieved \textbf{real-time notification} utilizing \textbf{SignalR}, implementing \textbf{WebSocket} push notifications driven by database change events, enhancing the user data synchronization experience.}
+        % \resumeItem{Optimized React performance by leveraging \textbf{Profiler} to identify \textbf{render bottlenecks} and implementing strategic \textbf{memoization techniques} (React.memo, useCallback) to eliminate unnecessary re-renders.}
+        % \resumeItem{Upgraded Ant Design Plot from v1.4.7 to v2.2.2, enabling support for more complex chart visualizations.}
+        \resumeItem{Modernized legacy .NET 4.8/ASPX web and mobile applications by architecting Next.js \textbf{PWA} solution within 5 months, delivering rapid release praised by \textbf{Disney} and \textbf{Intuit} as "most impressive product in 20 years".}
+        \resumeItem{Migrated \textbf{.NET} backend to Node.js, refactoring SQL stored procedures into reusable utility functions.}
+        % \resumeItem{Enhanced UI with Framer Motion animations, with instant response times and 25\% faster perceived load times.}
+        \resumeItem{Optimized Entity Framework Core queries using eager loading and query splitting, reducing database round trips by 65\% and improving response times from 800ms to 280ms}
+        \resumeItem{Optimized PWA offline experience using \textbf{Serwist} by implementing precaching strategies for pages and data, local cache fallbacks for offline requests, and background sync to execute queued requests once connectivity is restored.}
+        \resumeItem{Implemented \textbf{concurrent editing} functionality using \textbf{SignalR} in \textbf{.NET} application, enabling real-time collaboration with editor presence indicators, and operational transformation for conflict resolution.}
+        \resumeItem{Implemented \textbf{SAML SSO} integration with Okta for enterprise authentication.}
+        
+      \resumeItemListEnd
+      
+    \resumeSubheading
+      {Fullstack Software Engineer}{Vancouver, Apr. 2024 -- Jan. 2025}{Stealth Mode AI startup}{TypeScript, React, Node.js, Express}
+        \resumeItemListStart
+        % \resumeItem{The company is a stealth mode AI startup focused on creating a platform to assist veterinarians by utilizing \textbf{generative AI technologies} to automate day-to-day tasks}
+        % \resumeItem{Collaborated with founders from industry-leading companies (\textbf{Microsoft, Salesforce}) to design and implement production-level code for the \textbf{MVP product}.}
+        \resumeItem{Enhanced application performance by implementing \textbf{React Suspense} and \textbf{lazy loading} with custom fallback components, resulting in a 30\% reduction in \textbf{initial load time}.}
+        % \resumeItem{Designed a \textbf{hierarchical React Context system} with multiple specialized providers, enabling \textbf{granular state management} at different component levels while reducing unnecessary re-renders by 35\%.}
+        \resumeItem{Designed and implemented a hybrid state management system using \textbf{Redux} and \textbf{Context API}.}
+        \resumeItem{Created \textbf{reusable React custom hooks} (useDebounce, useLocalStorage) to standardize \textbf{state management} and optimize performance, resulting in 70\% reduction in API calls and seamless data persistence across components.}
+        \resumeItem{Implemented \textbf{Dependency Injection (DI) and Pub/Sub design patterns} to improve system architecture, resulting in enhanced code testability, maintainability and real-time event handling capabilities.}
+        \resumeItem{Built a secure authentication system leveraging \textbf{OAuth} 2.0 on the backend with \textbf{Node.js} and \textbf{Express.js}.}   
+        % \resumeItem{Implemented \textbf{Firebase Emulator Suite} with \textbf{rate limiting mechanisms} after a production incident, reducing cloud API costs by 40\% and preventing potential DoS scenarios through frontend simulation and backend throttling.}
+        \resumeItem{DevOpsed with \textbf{Nginx}, \textbf{Docker}, \textbf{Jenkins}, \textbf{Shell} at \textbf{AWS} EC2, RDS, and SES, Tested with \textbf{Jest} in CI/CD}
+        % \resumeItem{Partnering with a UX designer to define the scope, design, and implementation details, and independently implementing \textbf{multiple front-end features} using React, with a strong emphasis on \textbf{performance optimization} and \textbf{minimizing unnecessary re-renders}.}
+        % \resumeItem{Participating in code reviews and contributing to a \textbf{culture of continuous improvement}.}
+      \resumeItemListEnd
+    
+    \resumeSubheading
+      {Machine Learning Engineer}{Vancouver, July. 2024 -- Aug. 2024}{Instage}{Python, Hugging Face, Whisper }
+        \resumeItemListStart
+        \resumeItem{Replaced the \textbf{Microsoft Azure Speech} API with a customized processing pipeline using \textbf{Whisper}, reducing \textbf{inference time by 31\%} and \textbf{cutting per-query costs by 20\%}.}
+        \resumeItem{Researched and analyzed various speech-to-animation models, extensively documenting findings. Conducted a thorough feasibility analysis, detailing \textbf{inference latency} and \textbf{GPU resource consumption}.}
+      \resumeItemListEnd
+      
+    % \resumeSubheading
+    %   {Research Assistant}{Vancouver, Apr. 2024 -- Dec. 2024}{Northeastern University \& UBC}{TypeScript, Three.js, React, Next.js, Phaser.js }
+    %     \resumeItemListStart
+    %     \resumeItem{Developed an interactive 3D game using \textbf{Three.js}, \textbf{React} and \textbf{NextJs} to visualize complex algorithms such as Dijkstra and Bellman-Ford, enhanced user engagement and learning efficiency through gamification.}
+    %     \resumeItem{Innovatively utilized the \textbf{Callback Ref pattern} to solve complex component communication challenges, enabling efficient function sharing between components, reducing render cycles by 40\%.}
+    %     \resumeItem{Integrated \textbf{Browser Fingerprinting} technology for \textbf{passwordless authentication}, reducing friction in user experience while maintaining robust security measures and detecting suspicious login patterns.}
+    %     % \resumeItem{Tackled challenges in synchronizing algorithm execution with graphical rendering, and enabling user interaction by carefully managing state and event handling between React and Three.js.}
+    %     \resumeItem{Integrated \textbf{front-end tracking} to monitor user interactions within the 3D game, including user navigation, algorithm choices, and game performance, leveraging tools like \textbf{Google Analytics} and custom event tracking to gather insights for improving \textbf{user engagement}.}
+    %     \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+
+%-----------PROJECT-----------
+\section{Project}
+  \resumeSubHeadingListStart
+  \resumesub
+
+    \resumeSubSubheading
+      {CloudCart}{Java, Spring Boot, Microservices, AWS, Kubernetes, Redis}
+      \resumeItemListStart
+          \resumeItem{Built a full-stack e-commerce platform using \textbf{Spring Boot} microservices deployed on \textbf{AWS EKS}, implementing user management, product catalog, order processing, and payment integration with clean REST APIs.}
+
+        \resumeItem{Designed event-driven architecture using \textbf{message queues} and \textbf{Spring Cloud Stream} for asynchronous order processing, ensuring data consistency across microservices with proper error handling and retry mechanisms.}
+        
+        \resumeItem{Integrated \textbf{AWS Rekognition} for automatic product image tagging and \textbf{Comprehend} for sentiment analysis on product reviews, demonstrating practical AI/ML integration in Java applications.}
+        
+        \resumeItem{Implemented distributed caching strategy using \textbf{Redis} and optimized database queries with \textbf{JPA} eager loading, reducing average API response times from 500ms to 150ms.}
+        
+        \resumeItem{Built CI/CD pipeline using \textbf{GitHub Actions} for automated testing and deployment, with \textbf{Infrastructure as Code} templates for reproducible environment provisioning.}
+        % \resumeItem{Built full-stack e-commerce platform using \textbf{Spring Boot} microservices deployed on \textbf{AWS EKS}, implementing user management, product catalog, order processing, and payment integration with clean REST APIs.}
+
+        % \resumeItem{Designed event-driven architecture using \textbf{AWS SQS} and \textbf{Spring Cloud Stream} for asynchronous order processing, ensuring data consistency across microservices with proper error handling and retry mechanisms.}
+        
+        % \resumeItem{Integrated \textbf{AWS Rekognition} for automatic product image tagging and \textbf{Comprehend} for sentiment analysis on product reviews, demonstrating practical AI/ML integration in Java applications.}
+        
+        % \resumeItem{Implemented caching strategy using \textbf{Redis ElastiCache} and optimized database queries with \textbf{JPA} eager loading, reducing average API response times from 500ms to 150ms.}
+        
+        % \resumeItem{Containerized microservices using \textbf{Docker} and deployed to \textbf{AWS ECS Fargate} with \textbf{Application Load Balancer}, implementing health checks and auto-scaling based on CPU utilization.}
+      \resumeItemListEnd
+  \resumeSubHeadingListEnd
+
+  
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Northeastern University}{Vancouver, Canada}
+      {Master of Science in Computer Science (GPA 4.0)}
+      {Sep. 2023 -- Dec. 2024}
+    \resumeSubheading
+      {University of Nottingham}{Nottingham, UK}
+      {BSc (Hons) Computer Science with Artificial Intelligence (GPA 3.91 / 4.0, \textbf{ranked 2nd})}{Sep. 2019 -- Jul. 2023}
+  \resumeSubHeadingListEnd
+
+
+
+%-----------PROGRAMMING SKILLS-----------
+% \section{Technical Skills}
+%  \begin{itemize}[leftmargin=0.15in, label={}]
+%     \small{\item{
+%      \textbf{Languages}{: Java, TypeScript, JavaScript, c\#, HTML5, CSS3, Python, SQL, NoSQL, PostgreSQL} \\
+%      \textbf{Frameworks}{: React, .NET, Next.js, Redux, Node.js, Spring Boot, Express.js, Django, Nginx, TailwindCSS } \\
+%      \textbf{Tools}{: Jest, webpack, Lighthouse, Sass, MongoDB, Git, JIRA, Linux, Firebase, GCP, AWS EC2, Docker, Postman} \\
+%      }}
+%  \end{itemize}
+ 
+
+%-------------------------------------------
+\end{document}

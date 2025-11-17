@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "playwright-multitab-enhanced",
+        "run-mcp-server",
+        "--extension"
+      ]
+    }
+  }
+}

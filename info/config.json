@@ -1,0 +1,112 @@
+{
+  "personalInfo": {
+    "name": "Zixiang (Zack) Hu",
+    "email": "zackhu2001@gmail.com",
+    "phone": "(672) 338-6762",
+    "location": "Burnaby, British Columbia, Canada",
+    "linkedin": "https://www.linkedin.com/in/zixiang-hu/",
+    "website": "https://zackhu.com/",
+    "github": "ZackHu-2001"
+  },
+
+  "workAuthorization": {
+    "requireWorkPermit": false,
+    "requireVisa": false,
+    "authorizedToWorkIn": ["Canada", "United States"],
+    "sponsorshipRequired": false,
+    "notes": "Canadian citizen or permanent resident"
+  },
+
+  "demographics": {
+    "minority": false,
+    "veteran": false,
+    "disability": false,
+    "preferNotToAnswer": true
+  },
+
+  "availability": {
+    "startDate": "2 weeks",
+    "noticePeriod": "2 weeks",
+    "availableForRelocation": false,
+    "preferredLocations": ["Vancouver", "Burnaby", "Remote"],
+    "willingToTravel": true
+  },
+
+  "experience": {
+    "yearsOfExperience": 3,
+    "hasVFXExperience": false,
+    "hasAnimationExperience": false,
+    "hasGamingExperience": false,
+    "currentEmploymentStatus": "employed"
+  },
+
+  "references": {
+    "hasReferences": true,
+    "canProvideReferences": true,
+    "knowsAnyoneAtCompany": false
+  },
+
+  "jobPreferences": {
+    "blacklist": {
+      "companies": [],
+      "keywords": ["unpaid"],
+      "locations": [],
+      "industries": []
+    },
+    "whitelist": {
+      "companies": [],
+      "keywords": ["remote", "flexible"],
+      "locations": ["Remote", "Vancouver", "Burnaby"]
+    },
+    "salary": {
+      "min": 80000,
+      "target": 120000,
+      "currency": "CAD",
+      "negotiable": true
+    },
+    "workType": {
+      "remote": true,
+      "hybrid": true,
+      "onsite": false,
+      "preference": "hybrid"
+    },
+    "techStack": {
+      "mustHave": ["JavaScript", "TypeScript"],
+      "niceToHave": ["React", "Node.js", ".NET", "Python"],
+      "dealBreakers": []
+    }
+  },
+
+  "autoRules": {
+    "autoApply": {
+      "enabled": false
+    },
+    "autoSkip": {
+      "enabled": true,
+      "conditions": "Salary < minimum OR Contains blacklist keywords OR Requires relocation"
+    }
+  },
+
+  "applicationFormAnswers": {
+    "commonQuestions": {
+      "workPermit": "No",
+      "visa": "No",
+      "veteran": "No",
+      "minority": "No",
+      "disability": "Prefer not to answer",
+      "startDate": "2 weeks",
+      "relocation": "No",
+      "references": "Yes"
+    },
+    "fieldMappings": {
+      "Do you require a Visa or Work Permit?": "workPermit",
+      "Are you a veteran?": "veteran",
+      "Minority status": "minority",
+      "How soon could you start?": "startDate",
+      "Are you willing to relocate?": "relocation",
+      "Can you provide references?": "references"
+    }
+  },
+
+  "notes": "AI: Use this config to auto-fill application forms. Match form questions to fieldMappings and use commonQuestions values. If a question doesn't match, check unknown.json or make reasonable assumptions based on personalInfo."
+}
