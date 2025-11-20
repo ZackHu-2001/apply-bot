@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Filter, Settings, Calendar, Monitor, Sun, Moon, FileText, BookOpen } from 'lucide-react'
+import { LayoutDashboard, Settings, Calendar, Monitor, Sun, Moon, FileText, BookOpen, Settings2 } from 'lucide-react'
 import { useThemeStore } from '@/store/themeStore'
 import { useSidebarStore } from '@/store/sidebarStore'
 import logo from '/logo.svg'
@@ -12,7 +12,7 @@ export default function Sidebar() {
   const links = [
     { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/applications', icon: FileText, label: 'Applications' },
-    { to: '/filters', icon: Filter, label: 'Filters' },
+    { to: '/config', icon: Settings2, label: 'Config' },
     { to: '/unknown-questions', icon: BookOpen, label: 'Knowledge Base' },
     // { to: '/scheduler', icon: Calendar, label: 'Scheduler' },
     // { to: '/settings', icon: Settings, label: 'Settings' },

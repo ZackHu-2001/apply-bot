@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { Edit2, Save, X, Plus } from 'lucide-react'
+import { Edit2, Save, X, Plus, Info } from 'lucide-react'
 
 interface KnowledgeEntry {
   question: string
@@ -198,9 +198,17 @@ export default function KnowledgeBase() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Knowledge Base
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Knowledge Base
+          </h2>
+          <div className="group relative">
+            <Info className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 cursor-help" />
+            <div className="absolute left-0 top-full mt-2 w-64 p-3 bg-gray-900 dark:bg-stone-800 text-white dark:text-gray-100 text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+              All data is stored locally in the <code className="bg-gray-800 dark:bg-stone-900 px-1 rounded">data/</code> folder
+            </div>
+          </div>
+        </div>
         <div className="text-sm text-gray-500 dark:text-gray-400">
           {isLoading ? (
             'Loading...'

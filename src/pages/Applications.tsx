@@ -28,7 +28,7 @@ export default function Applications() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const response = await fetch('/applied.json')
+        const response = await fetch('/api/applied')
         const data = await response.json()
         setApplications(data)
       } catch (error) {

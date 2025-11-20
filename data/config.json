@@ -108,5 +108,5 @@
     }
   },
 
-  "notes": "AI: Use this config to auto-fill application forms. Match form questions to fieldMappings and use commonQuestions values. If a question doesn't match, check unknown.json or make reasonable assumptions based on personalInfo."
+  "notes": "AI: Use this config to auto-fill application forms. Match form questions to fieldMappings and use commonQuestions values. If a question doesn't match, check data/knowledge.json or make reasonable assumptions based on personalInfo."
 }

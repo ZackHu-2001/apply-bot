@@ -6,11 +6,11 @@
 
 ## 个人信息来源
 
-我的个人信息存储在 `info/` 文件夹下：
+我的个人信息存储在 `data/` 文件夹下：
 - `SampleResume.tex` / `SampleResume.pdf` - 简历信息
 - `config.json` - 配置文件（包含个人信息、申请表单答案等）
 
-配置文件在 `info/config.json`，包含：
+配置文件在 `data/config.json`，包含：
 - 个人信息（姓名、邮箱、电话等）
 - 工作授权信息（工签/签证要求）
 - 人口统计信息（少数族裔、退伍军人等）
@@ -23,12 +23,12 @@
 1. **减少操作次数**：尽量减少调用 snapshot 的次数。当看到所有 input field 后，一次性根据我的信息全部填写完，减少总的操作次数。
 
 2. **信息处理**：
-   - 优先从 `info/` 文件夹和 `info/config.json` 读取信息
+   - 优先从 `data/` 文件夹和 `data/config.json` 读取信息
    - 如果遇到不确定或未提供的信息，先根据上下文做合理假设
-   - 将所有假设和不确定的信息记录到 `unknown.json` 文件中，格式：`{"question": "问题内容", "assumedAnswer": "假设的答案", "timestamp": "时间戳"}`
+   - 将所有假设和不确定的信息记录到 `data/knowledge.json` 文件中，格式：`{"question": "问题内容", "assumedAnswer": "假设的答案", "timestamp": "时间戳"}`
 
 3. **申请记录**：
-   - 每完成一个申请后，**立即**将岗位信息记录到 `applied.json`
+   - 每完成一个申请后，**立即**将岗位信息记录到 `data/applied.json`
    - 记录格式：
      ```json
      {
@@ -43,10 +43,10 @@
    - **重要**：尽量申请保留 `link` 字段，即使是 Easy Apply 也要记录岗位链接，方便后续查看和追踪。
 
 4. **表单填写**：
-   - 读取 `info/config.json` 中的 `applicationFormAnswers.fieldMappings` 来匹配表单问题
+   - 读取 `data/config.json` 中的 `applicationFormAnswers.fieldMappings` 来匹配表单问题
    - 使用 `applicationFormAnswers.commonQuestions` 中的值来填写
    - 如果问题不匹配，参考 `personalInfo`、`workAuthorization`、`demographics`、`availability`、`experience` 等字段
-   - 遇到无法确定的问题，填写后记录到 `unknown.json`
+   - 遇到无法确定的问题，填写后记录到 `data/knowledge.json`
    
    **重要 - LinkedIn 表单元素特殊处理**：
    - LinkedIn 的 radio/checkbox 按钮的 `value` 属性通常是 UUID，而不是可见文本（如 "Yes"/"No"）
@@ -87,11 +87,12 @@
 
 ```
 apply-bot/
-├── info/
+├── data/
 │   ├── SampleResume.pdf
 │   ├── SampleResume.tex
 │   └── config.json (主配置文件)
-├── applied.json (申请记录)
-├── unknown.json (不确定信息记录)
+├── data/
+│   ├── applied.json (申请记录)
+│   └── knowledge.json (不确定信息记录)
 └── readme.md (本文件)
 ```

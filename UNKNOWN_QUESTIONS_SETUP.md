@@ -2,7 +2,7 @@
 
 ## Overview
 
-This module is used to manage and display unknown questions that AI encounters during the application process. When AI encounters questions it cannot determine the answer to, they are recorded in the `unknown.json` file, and you can view, answer, and edit these questions in this module.
+This module is used to manage and display unknown questions that AI encounters during the application process. When AI encounters questions it cannot determine the answer to, they are recorded in the `data/knowledge.json` file, and you can view, answer, and edit these questions in this module.
 
 ## Quick Start
 
@@ -64,7 +64,7 @@ npm run dev
 
 ## Data Format
 
-The `unknown.json` file format:
+The `data/knowledge.json` file format:
 
 ```json
 [
@@ -86,6 +86,6 @@ The `unknown.json` file format:
 ## Notes
 
 - Make sure the backend server is running, otherwise the frontend cannot load or save data
-- The `unknown.json` file is located in the project root directory
+- The `knowledge.json` file is located in the `data/` directory
 - If the file doesn't exist, the server will automatically create an empty array
 
