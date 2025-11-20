@@ -15,6 +15,7 @@ const PORT = 3010
 const knowledgeJsonPath = path.join(__dirname, 'data', 'knowledge.json')
 const appliedJsonPath = path.join(__dirname, 'data', 'applied.json')
 const promptsJsonPath = path.join(__dirname, 'data', 'prompts.json')
+const jobFiltersJsonPath = path.join(__dirname, 'data', 'job-filters.json')
 const dataDir = path.join(__dirname, 'data')
 
 // Ensure data directory exists
@@ -346,6 +347,39 @@ app.delete('/api/prompts/:id', (req, res) => {
   } catch (error) {
     console.error('Error deleting prompt:', error)
     res.status(500).json({ error: 'Failed to delete prompt' })
+  }
+})
+
+// Job Filters API
+// Get all job filters
+app.get('/api/job-filters', (req, res) => {
+  try {
+    if (!fs.existsSync(jobFiltersJsonPath)) {
+      return res.json({ filters: [] })
+    }
+    const data = fs.readFileSync(jobFiltersJsonPath, 'utf-8')
+    const json = data.trim() ? JSON.parse(data) : { filters: [] }
+    res.json(json)
+  } catch (error) {
+    console.error('Error reading job-filters.json:', error)
+    res.status(500).json({ error: 'Failed to read job-filters.json' })
+  }
+})
+
+// Update job filters
+app.post('/api/job-filters', (req, res) => {
+  try {
+    const { filters } = req.body
+    
+    if (!Array.isArray(filters)) {
+      return res.status(400).json({ error: 'Invalid data format' })
+    }
+    
+    fs.writeFileSync(jobFiltersJsonPath, JSON.stringify({ filters }, null, 2), 'utf-8')
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Error writing job-filters.json:', error)
+    res.status(500).json({ error: 'Failed to write job-filters.json' })
   }
 })
 

@@ -1,0 +1,295 @@
+{
+  "filters": [
+    {
+      "id": "blacklist-companies",
+      "name": "Blacklist Companies",
+      "type": "list",
+      "description": "Companies to automatically skip",
+      "aiExplanation": "When encountering job postings from these companies, automatically skip them without applying. This is a hard filter - never apply to these companies regardless of other criteria. Match company names case-insensitively.",
+      "value": [],
+      "placeholder": "Enter company names, one per line",
+      "enabled": true
+    },
+    {
+      "id": "blacklist-keywords",
+      "name": "Blacklist Keywords",
+      "type": "list",
+      "description": "Keywords in job descriptions that should trigger auto-skip",
+      "aiExplanation": "If a job posting contains any of these keywords in the title, description, or requirements, automatically skip it. Use case-insensitive matching. Check for partial matches (e.g., 'unpaid' matches 'unpaid internship').",
+      "value": [
+        "unpaid",
+        "internship",
+        "volunteer",
+        "commission only"
+      ],
+      "placeholder": "Enter keywords, one per line",
+      "enabled": true
+    },
+    {
+      "id": "blacklist-locations",
+      "name": "Blacklist Locations",
+      "type": "list",
+      "description": "Locations to automatically skip",
+      "aiExplanation": "Skip job postings that are located in these areas. Match location names case-insensitively. If a job mentions multiple locations and one is blacklisted, skip it.",
+      "value": [],
+      "placeholder": "Enter locations, one per line",
+      "enabled": true
+    },
+    {
+      "id": "blacklist-job-titles",
+      "name": "Blacklist Job Titles",
+      "type": "list",
+      "description": "Job titles to automatically skip",
+      "aiExplanation": "Skip job postings with these exact or similar job titles. Use case-insensitive matching and check for variations (e.g., 'Software Engineer' matches 'Senior Software Engineer').",
+      "value": [],
+      "placeholder": "Enter job titles, one per line",
+      "enabled": true
+    },
+    {
+      "id": "whitelist-companies",
+      "name": "Whitelist Companies",
+      "type": "list",
+      "description": "Companies to prioritize",
+      "aiExplanation": "Prioritize job postings from these companies. If a job matches other criteria, these companies should be given higher priority. Still respect blacklist and other filters. Match company names case-insensitively.",
+      "value": [],
+      "placeholder": "Enter company names, one per line",
+      "enabled": true
+    },
+    {
+      "id": "whitelist-keywords",
+      "name": "Whitelist Keywords",
+      "type": "list",
+      "description": "Keywords that make a job more attractive",
+      "aiExplanation": "Prioritize job postings that contain these keywords. These keywords indicate desirable features (e.g., 'remote', 'flexible hours', 'startup'). Jobs with these keywords should be given higher priority.",
+      "value": [
+        "remote",
+        "flexible",
+        "startup"
+      ],
+      "placeholder": "Enter keywords, one per line",
+      "enabled": true
+    },
+    {
+      "id": "min-salary",
+      "name": "Minimum Salary",
+      "type": "number",
+      "description": "Minimum acceptable salary",
+      "aiExplanation": "Skip job postings where the salary range is below this amount. If no salary is mentioned, you may still apply but note the missing salary information. Use the currency specified in the salary-currency filter. For salary ranges, check if the minimum of the range meets this requirement.",
+      "value": 80000,
+      "min": 0,
+      "max": 1000000,
+      "currency": "CAD",
+      "enabled": true
+    },
+    {
+      "id": "target-salary",
+      "name": "Target Salary",
+      "type": "number",
+      "description": "Ideal salary target",
+      "aiExplanation": "This is the ideal salary you're aiming for. Use this to prioritize jobs that offer salaries closer to this target. Jobs with salaries at or above this target should be given higher priority.",
+      "value": 120000,
+      "min": 0,
+      "max": 1000000,
+      "currency": "CAD",
+      "enabled": true
+    },
+    {
+      "id": "salary-currency",
+      "name": "Salary Currency",
+      "type": "select",
+      "description": "Currency for salary expectations",
+      "aiExplanation": "Use this currency when evaluating salary requirements. Convert other currencies to this one if needed using current exchange rates, or note the currency mismatch if conversion is not possible.",
+      "value": "CAD",
+      "options": [
+        "CAD",
+        "USD",
+        "EUR",
+        "GBP",
+        "AUD",
+        "JPY",
+        "CNY"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "work-type",
+      "name": "Work Type Preference",
+      "type": "multiselect",
+      "description": "Acceptable work arrangements",
+      "aiExplanation": "Only apply to jobs that match at least one of these work types. If a job doesn't specify, you may still apply but note the missing information. 'Remote' means fully remote, 'hybrid' means partial remote, 'onsite' means office-based.",
+      "value": [],
+      "options": [
+        "remote",
+        "hybrid",
+        "onsite"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "preferred-locations",
+      "name": "Preferred Locations",
+      "type": "list",
+      "description": "Preferred job locations",
+      "aiExplanation": "Prioritize jobs in these locations. Jobs in other locations may still be considered if they match other strong criteria, but these locations should be preferred. Match location names case-insensitively.",
+      "value": [
+        "Remote",
+        "Vancouver",
+        "Burnaby"
+      ],
+      "placeholder": "Enter locations, one per line",
+      "enabled": true
+    },
+    {
+      "id": "must-have-tech",
+      "name": "Must-Have Technologies",
+      "type": "list",
+      "description": "Technologies that must be present in the job",
+      "aiExplanation": "Only apply to jobs that mention at least one of these technologies in the requirements or job description. This is a hard requirement - if none are mentioned, skip the job. Check for variations and related technologies (e.g., 'JS' matches 'JavaScript', 'React' matches 'React.js').",
+      "value": [
+        "JavaScript",
+        "TypeScript"
+      ],
+      "placeholder": "Enter technologies, one per line",
+      "enabled": true
+    },
+    {
+      "id": "nice-to-have-tech",
+      "name": "Nice-to-Have Technologies",
+      "type": "list",
+      "description": "Technologies that are preferred but not required",
+      "aiExplanation": "Prioritize jobs that mention these technologies. These are bonus points - jobs with these technologies should be given higher priority, but jobs without them can still be considered.",
+      "value": [
+        "React",
+        "Node.js",
+        "Python",
+        ".NET"
+      ],
+      "placeholder": "Enter technologies, one per line",
+      "enabled": true
+    },
+    {
+      "id": "deal-breaker-tech",
+      "name": "Deal-Breaker Technologies",
+      "type": "list",
+      "description": "Technologies that would cause you to skip a job",
+      "aiExplanation": "Skip job postings that require or heavily emphasize these technologies. This is a hard filter - if a job requires expertise in these technologies, automatically skip it.",
+      "value": [],
+      "placeholder": "Enter technologies, one per line",
+      "enabled": true
+    },
+    {
+      "id": "min-experience-years",
+      "name": "Minimum Years of Experience",
+      "type": "number",
+      "description": "Minimum years of experience required",
+      "aiExplanation": "Skip jobs that require more years of experience than the candidate has. If the job requires 'X+ years' and candidate has X years, still apply. If it requires 'X years' and candidate has X-1, skip. Check the candidate's experience from their resume.",
+      "value": 0,
+      "min": 0,
+      "max": 20,
+      "enabled": true
+    },
+    {
+      "id": "max-experience-years",
+      "name": "Maximum Years of Experience",
+      "type": "number",
+      "description": "Maximum years of experience required (to avoid overqualified positions)",
+      "aiExplanation": "Skip jobs that require significantly more experience than you have. If a job requires '10+ years' and you have 3 years, skip it as you're likely underqualified. This helps avoid applying to senior positions when you're mid-level.",
+      "value": 5,
+      "min": 0,
+      "max": 20,
+      "enabled": true
+    },
+    {
+      "id": "company-size-preference",
+      "name": "Company Size Preference",
+      "type": "multiselect",
+      "description": "Preferred company sizes",
+      "aiExplanation": "Prioritize jobs from companies of these sizes. If a job doesn't specify company size, you may still apply. 'Startup' typically means <50 employees, 'Small' is 50-200, 'Medium' is 200-1000, 'Large' is 1000+.",
+      "value": [
+        "startup",
+        "small",
+        "medium"
+      ],
+      "options": [
+        "startup",
+        "small",
+        "medium",
+        "large",
+        "enterprise"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "job-level-preference",
+      "name": "Job Level Preference",
+      "type": "multiselect",
+      "description": "Preferred job levels",
+      "aiExplanation": "Only apply to jobs at these levels. Match job titles and descriptions for level indicators like 'Junior', 'Mid-level', 'Senior', 'Lead', 'Principal', 'Staff', etc.",
+      "value": [
+        "mid-level",
+        "senior",
+        "lead",
+        "principal",
+        "staff",
+        "junior",
+        "intern"
+      ],
+      "options": [
+        "intern",
+        "junior",
+        "mid-level",
+        "senior",
+        "lead",
+        "principal",
+        "staff"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "benefits-must-have",
+      "name": "Must-Have Benefits",
+      "type": "list",
+      "description": "Benefits that must be present",
+      "aiExplanation": "Only apply to jobs that mention at least one of these benefits. If none are mentioned, you may still apply but note the missing information. Common benefits include 'health insurance', 'dental', '401k', 'stock options', 'unlimited PTO', etc.",
+      "value": [],
+      "placeholder": "Enter benefits, one per line",
+      "enabled": true
+    },
+    {
+      "id": "skip-no-salary",
+      "name": "Skip Jobs Without Salary",
+      "type": "boolean",
+      "description": "Skip job postings that don't mention salary",
+      "aiExplanation": "If enabled, automatically skip jobs that don't provide salary information. If disabled, still apply but note the missing salary information for review. This helps avoid wasting time on jobs that may not meet salary expectations.",
+      "value": false,
+      "enabled": true
+    },
+    {
+      "id": "skip-contract-only",
+      "name": "Skip Contract-Only Positions",
+      "type": "boolean",
+      "description": "Skip contract or temporary positions",
+      "aiExplanation": "If enabled, skip job postings that are explicitly contract, temporary, or freelance positions. Look for keywords like 'contract', 'temporary', 'freelance', 'consultant' in the job type or description.",
+      "value": false,
+      "enabled": false
+    },
+    {
+      "id": "require-job-description",
+      "name": "Require Detailed Job Description",
+      "type": "boolean",
+      "description": "Skip jobs with very short or vague descriptions",
+      "aiExplanation": "If enabled, skip job postings that have very short descriptions (less than 100 words) or are too vague. This helps avoid low-quality job postings that may be scams or poorly defined roles.",
+      "value": false,
+      "enabled": false
+    },
+    {
+      "id": "auto-apply-enabled",
+      "name": "Auto-Apply Enabled",
+      "type": "boolean",
+      "description": "Enable automatic application submission",
+      "aiExplanation": "If enabled, automatically submit applications for jobs that pass all filters. If disabled, only collect job information and wait for manual review before applying. Use this to control whether you want fully automated or semi-automated job applications.",
+      "value": false,
+      "enabled": false
+    }
+  ]
+}
