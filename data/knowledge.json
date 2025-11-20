@@ -34,10 +34,11 @@
     "timestamp": "2025-01-19T08:30:00.000Z"
   },
   {
-    "question": "Are you authorized to work in the United States?",
+    "question": "Are you authorized to work in Canada?",
     "assumedAnswer": "Yes",
-    "answer": "Yes, I am authorized to work in the United States. I hold a valid work authorization.",
-    "timestamp": "2025-01-19T10:20:00.000Z"
+    "answer": "Yes, I am authorized to work in Canada. I hold a valid work authorization, PGWP which expires at 2029.",
+    "timestamp": "2025-01-19T10:20:00.000Z",
+    "updatedAt": "2025-11-20T04:25:36.741Z"
   },
   {
     "question": "Do you have experience with cloud platforms (AWS, Azure, GCP)?",
@@ -67,4 +68,3 @@
     "timestamp": "2025-01-22T10:00:00.000Z"
   }
 ]
-
