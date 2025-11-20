@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts'
-import { TrendingUp, FileText, CheckCircle2, RefreshCw, Download, ExternalLink, Github, Heart, BookOpen, ArrowUpRight, Info } from 'lucide-react'
+import { TrendingUp, FileText, CheckCircle2, RefreshCw, Download, ExternalLink, Github, Heart, BookOpen, ArrowUpRight, LockKeyhole } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 interface Application {
@@ -159,13 +159,14 @@ export default function Dashboard() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Dashboard
-          </h2>
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+          Dashboard
+        </h2>
           <div className="group relative">
-            <Info className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 cursor-help" />
-            <div className="absolute left-0 top-full mt-2 w-64 p-3 bg-gray-900 dark:bg-stone-800 text-white dark:text-gray-100 text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
-              All data is stored locally in the <code className="bg-gray-800 dark:bg-stone-900 px-1 rounded">data/</code> folder
+            <LockKeyhole className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 cursor-help" />
+            <div className="absolute left-0 top-full mt-2 w-72 p-3 bg-gray-900 dark:bg-stone-800 text-white dark:text-gray-100 text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+              <p className="mb-1">All data is stored locally in the <code className="bg-gray-800 dark:bg-stone-900 px-1 rounded">data/</code> folder.</p>
+              <p className="text-gray-300 dark:text-gray-400">No servers read or access your data.</p>
             </div>
           </div>
         </div>

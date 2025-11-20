@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Upload, FileText, X, Check } from 'lucide-react'
+import { Upload, FileText, X, Check, Info } from 'lucide-react'
 
 interface ResumeFile {
   name: string
@@ -147,10 +147,20 @@ export default function Config() {
         {/* Resume Upload Section */}
         <Card className="border-gray-200 dark:border-stone-700 shadow-sm">
           <CardHeader className="bg-gradient-to-r from-blue-50/50 to-white dark:from-blue-900/20 dark:to-stone-800/50 border-b border-gray-200 dark:border-stone-700">
-            <CardTitle className="text-xl font-semibold">Resume Management</CardTitle>
-            <CardDescription>
-              Upload and manage your resume files. Only PDF files are supported.
-            </CardDescription>
+            <div className="flex items-start justify-between">
+              <div>
+                <CardTitle className="text-xl font-semibold">Resume Management</CardTitle>
+                <CardDescription>
+                  Upload and manage your resume files. Only PDF files are supported.
+                </CardDescription>
+              </div>
+              <div className="group relative">
+                <Info className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 cursor-help flex-shrink-0" />
+                <div className="absolute right-0 top-full mt-2 w-72 p-3 bg-gray-900 dark:bg-stone-800 text-white dark:text-gray-100 text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 pointer-events-none">
+                  <p>AI will automatically extract information from your uploaded resume to fill out job application forms and optimize your answers based on your experience and skills.</p>
+                </div>
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-4">
