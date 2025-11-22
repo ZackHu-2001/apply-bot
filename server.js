@@ -4,18 +4,45 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import multer from 'multer'
+import net from 'net'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const app = express()
-const PORT = 3010
+const DEFAULT_PORT = 3001
+
+// Check if a port is available
+function isPortAvailable(port) {
+  return new Promise((resolve) => {
+    const server = net.createServer()
+    server.once('error', () => resolve(false))
+    server.once('listening', () => {
+      server.close()
+      resolve(true)
+    })
+    server.listen(port)
+  })
+}
+
+// Find an available port starting from the default
+async function findAvailablePort(startPort, maxAttempts = 10) {
+  for (let i = 0; i < maxAttempts; i++) {
+    const port = startPort + i
+    if (await isPortAvailable(port)) {
+      return port
+    }
+    console.log(`Port ${port} is in use, trying ${port + 1}...`)
+  }
+  throw new Error(`No available port found between ${startPort} and ${startPort + maxAttempts - 1}`)
+}
 
 // Get paths to JSON files (in data directory)
 const knowledgeJsonPath = path.join(__dirname, 'data', 'knowledge.json')
 const appliedJsonPath = path.join(__dirname, 'data', 'applied.json')
 const promptsJsonPath = path.join(__dirname, 'data', 'prompts.json')
 const jobFiltersJsonPath = path.join(__dirname, 'data', 'job-filters.json')
+const logsJsonPath = path.join(__dirname, 'data', 'logs.json')
 const dataDir = path.join(__dirname, 'data')
 
 // Ensure data directory exists
@@ -370,11 +397,11 @@ app.get('/api/job-filters', (req, res) => {
 app.post('/api/job-filters', (req, res) => {
   try {
     const { filters } = req.body
-    
+
     if (!Array.isArray(filters)) {
       return res.status(400).json({ error: 'Invalid data format' })
     }
-    
+
     fs.writeFileSync(jobFiltersJsonPath, JSON.stringify({ filters }, null, 2), 'utf-8')
     res.json({ success: true })
   } catch (error) {
@@ -383,7 +410,125 @@ app.post('/api/job-filters', (req, res) => {
   }
 })
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+// Logs API
+// Get all logs
+app.get('/api/logs', (req, res) => {
+  try {
+    if (!fs.existsSync(logsJsonPath)) {
+      return res.json({ sessions: [] })
+    }
+    const data = fs.readFileSync(logsJsonPath, 'utf-8')
+    const json = data.trim() ? JSON.parse(data) : { sessions: [] }
+    res.json(json)
+  } catch (error) {
+    console.error('Error reading logs.json:', error)
+    res.status(500).json({ error: 'Failed to read logs.json' })
+  }
 })
+
+// Create new log session
+app.post('/api/logs', (req, res) => {
+  try {
+    const { session } = req.body
+
+    if (!session || !session.id) {
+      return res.status(400).json({ error: 'Invalid session data' })
+    }
+
+    let logsData = { sessions: [] }
+    if (fs.existsSync(logsJsonPath)) {
+      const data = fs.readFileSync(logsJsonPath, 'utf-8')
+      logsData = data.trim() ? JSON.parse(data) : { sessions: [] }
+    }
+
+    // Add new session at the beginning
+    logsData.sessions.unshift(session)
+
+    // Keep only last 50 sessions
+    if (logsData.sessions.length > 50) {
+      logsData.sessions = logsData.sessions.slice(0, 50)
+    }
+
+    fs.writeFileSync(logsJsonPath, JSON.stringify(logsData, null, 2), 'utf-8')
+    res.json({ success: true, session })
+  } catch (error) {
+    console.error('Error creating log session:', error)
+    res.status(500).json({ error: 'Failed to create log session' })
+  }
+})
+
+// Append log entry to existing session
+app.post('/api/logs/:sessionId/entries', (req, res) => {
+  try {
+    const { sessionId } = req.params
+    const { entry } = req.body
+
+    if (!entry) {
+      return res.status(400).json({ error: 'Invalid entry data' })
+    }
+
+    if (!fs.existsSync(logsJsonPath)) {
+      return res.status(404).json({ error: 'No logs found' })
+    }
+
+    const data = fs.readFileSync(logsJsonPath, 'utf-8')
+    const logsData = data.trim() ? JSON.parse(data) : { sessions: [] }
+
+    const session = logsData.sessions.find(s => s.id === sessionId)
+    if (!session) {
+      return res.status(404).json({ error: 'Session not found' })
+    }
+
+    if (!session.entries) {
+      session.entries = []
+    }
+    session.entries.push(entry)
+    session.updatedAt = new Date().toISOString()
+
+    fs.writeFileSync(logsJsonPath, JSON.stringify(logsData, null, 2), 'utf-8')
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Error appending log entry:', error)
+    res.status(500).json({ error: 'Failed to append log entry' })
+  }
+})
+
+// Delete log session
+app.delete('/api/logs/:sessionId', (req, res) => {
+  try {
+    const { sessionId } = req.params
+
+    if (!fs.existsSync(logsJsonPath)) {
+      return res.status(404).json({ error: 'No logs found' })
+    }
+
+    const data = fs.readFileSync(logsJsonPath, 'utf-8')
+    const logsData = data.trim() ? JSON.parse(data) : { sessions: [] }
+
+    const index = logsData.sessions.findIndex(s => s.id === sessionId)
+    if (index === -1) {
+      return res.status(404).json({ error: 'Session not found' })
+    }
+
+    logsData.sessions.splice(index, 1)
+    fs.writeFileSync(logsJsonPath, JSON.stringify(logsData, null, 2), 'utf-8')
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Error deleting log session:', error)
+    res.status(500).json({ error: 'Failed to delete log session' })
+  }
+})
+
+// Start server with automatic port selection
+;(async () => {
+  try {
+    const port = await findAvailablePort(DEFAULT_PORT)
+    app.listen(port, () => {
+      console.log(`Server running on http://localhost:${port}`)
+    })
+  } catch (error) {
+    console.error('Failed to start server:', error.message)
+    process.exit(1)
+  }
+})()
 
