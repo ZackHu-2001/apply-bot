@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
-import { Edit2, Save, X, Plus, Trash2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Edit2, Save, X, Plus, Trash2, ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from 'lucide-react'
 
 interface KnowledgeEntry {
   question: string
@@ -209,6 +209,34 @@ export default function KnowledgeBase() {
     }
   }
 
+  const handleMoveQuestion = async (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= questions.length) return
+
+    const updatedQuestions = [...questions]
+    const [movedQuestion] = updatedQuestions.splice(index, 1)
+    updatedQuestions.splice(newIndex, 0, movedQuestion)
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/unknown`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedQuestions),
+      })
+
+      if (response.ok) {
+        setQuestions(updatedQuestions)
+      } else {
+        throw new Error('Failed to reorder entry')
+      }
+    } catch (error) {
+      console.error('Failed to reorder entry:', error)
+      alert('Failed to reorder entry. Please try again.')
+    }
+  }
+
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString)
@@ -224,21 +252,9 @@ export default function KnowledgeBase() {
     }
   }
 
-  const unansweredQuestions = questions
-    .filter(q => !q.answer)
-    .sort((a, b) => {
-      const timeA = new Date(a.timestamp).getTime()
-      const timeB = new Date(b.timestamp).getTime()
-      return timeB - timeA // Newest first
-    })
-  
-  const answeredQuestions = questions
-    .filter(q => q.answer)
-    .sort((a, b) => {
-      const timeA = new Date(a.updatedAt || a.timestamp).getTime()
-      const timeB = new Date(b.updatedAt || b.timestamp).getTime()
-      return timeB - timeA // Newest first
-    })
+  const unansweredQuestions = questions.filter(q => !q.answer)
+
+  const answeredQuestions = questions.filter(q => q.answer)
 
   // Auto-switch to answered tab if unanswered is empty and answered has items
   useEffect(() => {
@@ -462,16 +478,18 @@ export default function KnowledgeBase() {
                       return (
                         <>
                           <div className="space-y-4">
-                            {paginatedQuestions.map((question, index) => {
+                            {paginatedQuestions.map((question, paginatedIndex) => {
                       // Find original index using timestamp and question combination
                       const originalIndex = questions.findIndex(
                         q => q.timestamp === question.timestamp && q.question === question.question
                       )
                       const isEditing = editingIndex === originalIndex
+                      const isFirst = originalIndex === 0
+                      const isLast = originalIndex === questions.length - 1
 
                       return (
                         <div
-                          key={`${question.timestamp}-${index}`}
+                          key={`${question.timestamp}-${paginatedIndex}`}
                           className="p-4 border border-gray-200 dark:border-stone-700 rounded-lg bg-white dark:bg-stone-800"
                         >
                           {isEditing ? (
@@ -540,7 +558,23 @@ export default function KnowledgeBase() {
                                     {question.answer}
                                   </div>
                                 </div>
-                                <div className="flex gap-2 ml-4">
+                                <div className="flex items-center gap-1 ml-4">
+                                  <div className="flex flex-col">
+                                    <button
+                                      onClick={() => handleMoveQuestion(originalIndex, 'up')}
+                                      disabled={isFirst}
+                                      className="p-0.5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                      <ChevronUp className="h-4 w-4" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleMoveQuestion(originalIndex, 'down')}
+                                      disabled={isLast}
+                                      className="p-0.5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                                    >
+                                      <ChevronDown className="h-4 w-4" />
+                                    </button>
+                                  </div>
                                   <Button
                                     onClick={() => handleStartEdit(originalIndex)}
                                     variant="ghost"

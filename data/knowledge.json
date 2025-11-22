@@ -6,16 +6,65 @@
     "timestamp": "2025-01-15T10:30:00.000Z"
   },
   {
-    "question": "What is your expected salary range?",
-    "assumedAnswer": "$120,000 - $150,000",
-    "answer": "$130,000 - $160,000 annually, negotiable based on total compensation package.",
-    "timestamp": "2025-01-16T14:20:00.000Z"
+    "question": "What is your availability to start?",
+    "assumedAnswer": "2 weeks",
+    "answer": "I can start within 2-3 weeks after receiving an offer, allowing time for proper notice to my current employer.",
+    "timestamp": "2025-01-19T08:30:00.000Z"
   },
   {
     "question": "Are you willing to relocate?",
     "assumedAnswer": "No",
     "answer": "I am open to relocation for the right opportunity, but prefer remote or hybrid work arrangements.",
     "timestamp": "2025-01-17T09:15:00.000Z"
+  },
+  {
+    "question": "What is your expected salary range?",
+    "assumedAnswer": "$120,000 - $150,000",
+    "answer": "$130,000 - $160,000 annually, negotiable based on total compensation package.",
+    "timestamp": "2025-01-16T14:20:00.000Z"
+  },
+  {
+    "question": "Are you a veteran or active military?",
+    "assumedAnswer": "No",
+    "answer": "No, I am not a veteran or active military.",
+    "timestamp": "2025-01-10T08:05:00.000Z"
+  },
+  {
+    "question": "Do you have a disability?",
+    "assumedAnswer": "No",
+    "answer": "No, I do not have a disability.",
+    "timestamp": "2025-01-10T08:10:00.000Z"
+  },
+  {
+    "question": "Are you authorized to work in Canada?",
+    "assumedAnswer": "Yes",
+    "answer": "Yes, I am authorized to work in Canada. I hold a valid work authorization, PGWP which expires at 2029.",
+    "timestamp": "2025-01-19T10:20:00.000Z",
+    "updatedAt": "2025-11-20T04:25:36.741Z"
+  },
+  {
+    "question": "Do you identify as LGBTQ+?",
+    "assumedAnswer": "Decline to answer",
+    "answer": "I prefer not to disclose this information.",
+    "timestamp": "2025-01-10T08:00:00.000Z"
+  },
+  {
+    "question": "What is your gender?",
+    "assumedAnswer": "Male",
+    "answer": "Male",
+    "timestamp": "2025-01-10T08:15:00.000Z"
+  },
+  {
+    "question": "What is your race or ethnicity?",
+    "assumedAnswer": "Asian",
+    "answer": "Asian",
+    "timestamp": "2025-01-10T08:20:00.000Z"
+  },
+  {
+    "question": "Are you Hispanic or Latino?",
+    "assumedAnswer": "No",
+    "answer": "No, I am not Hispanic or Latino.",
+    "timestamp": "2025-01-10T08:25:00.000Z"
   },
   {
     "question": "How many years of experience do you have with React?",
@@ -26,19 +75,6 @@
     "question": "Do you have experience with TypeScript?",
     "assumedAnswer": "Yes",
     "timestamp": "2025-01-18T12:00:00.000Z"
-  },
-  {
-    "question": "What is your availability to start?",
-    "assumedAnswer": "2 weeks",
-    "answer": "I can start within 2-3 weeks after receiving an offer, allowing time for proper notice to my current employer.",
-    "timestamp": "2025-01-19T08:30:00.000Z"
-  },
-  {
-    "question": "Are you authorized to work in Canada?",
-    "assumedAnswer": "Yes",
-    "answer": "Yes, I am authorized to work in Canada. I hold a valid work authorization, PGWP which expires at 2029.",
-    "timestamp": "2025-01-19T10:20:00.000Z",
-    "updatedAt": "2025-11-20T04:25:36.741Z"
   },
   {
     "question": "Do you have experience with cloud platforms (AWS, Azure, GCP)?",
@@ -66,5 +102,17 @@
     "question": "Do you have experience with microservices architecture?",
     "assumedAnswer": "Yes",
     "timestamp": "2025-01-22T10:00:00.000Z"
+  },
+  {
+    "question": "How many years of experience do you have with Selenium?",
+    "assumedAnswer": "2",
+    "reasoning": "Estimated based on 3 years total SDE experience; Selenium is commonly used in test automation roles",
+    "timestamp": "2025-11-21T18:49:00.000Z"
+  },
+  {
+    "question": "How many years of experience do you have with JSON?",
+    "assumedAnswer": "3",
+    "reasoning": "JSON is a fundamental data format used throughout entire career as a software developer",
+    "timestamp": "2025-11-21T18:49:00.000Z"
   }
 ]
