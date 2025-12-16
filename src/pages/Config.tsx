@@ -11,6 +11,13 @@ interface ResumeFile {
   uploadedAt: string
 }
 
+interface CurrentResume {
+  exists: boolean
+  sourceFile: string | null
+  parsedAt: string | null
+  textLength: number
+}
+
 interface JobFilter {
   id: string
   name: string
@@ -28,8 +35,11 @@ interface JobFilter {
 
 export default function Config() {
   const [resumeFiles, setResumeFiles] = useState<ResumeFile[]>([])
+  const [currentResume, setCurrentResume] = useState<CurrentResume | null>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
+  const [parsingStatus, setParsingStatus] = useState<Record<string, 'parsing' | 'success' | 'error'>>({})
+  const [parsingMessage, setParsingMessage] = useState<Record<string, string>>({})
   const [jobFilters, setJobFilters] = useState<JobFilter[]>([])
   const [isLoadingFilters, setIsLoadingFilters] = useState(true)
   const [isCreatingFilter, setIsCreatingFilter] = useState(false)
@@ -42,13 +52,25 @@ export default function Config() {
     enabled: true,
   })
   const [currentPage, setCurrentPage] = useState(1)
-  
+
   const ITEMS_PER_PAGE = 10
 
   useEffect(() => {
     fetchResumes()
+    fetchCurrentResume()
     fetchJobFilters()
   }, [])
+
+  const fetchCurrentResume = async () => {
+    try {
+      const response = await fetch('/api/resume')
+      const data = await response.json()
+      setCurrentResume(data)
+    } catch (error) {
+      console.error('Failed to load current resume:', error)
+      setCurrentResume(null)
+    }
+  }
 
   const fetchResumes = async () => {
     try {
@@ -141,6 +163,65 @@ export default function Config() {
     } catch (error) {
       console.error('Failed to delete resume:', error)
       alert('Failed to delete resume. Please try again.')
+    }
+  }
+
+  const handleParseResume = async (fileName: string) => {
+    setParsingStatus(prev => ({ ...prev, [fileName]: 'parsing' }))
+    setParsingMessage(prev => ({ ...prev, [fileName]: 'Parsing resume...' }))
+
+    try {
+      const response = await fetch(`/api/resumes/parse/${encodeURIComponent(fileName)}`, {
+        method: 'POST',
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setParsingStatus(prev => ({ ...prev, [fileName]: 'success' }))
+        setParsingMessage(prev => ({
+          ...prev,
+          [fileName]: 'Resume parsed successfully! Text saved to resume.txt.'
+        }))
+
+        // Fetch the updated current resume
+        await fetchCurrentResume()
+
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setParsingStatus(prev => {
+            const newStatus = { ...prev }
+            delete newStatus[fileName]
+            return newStatus
+          })
+          setParsingMessage(prev => {
+            const newMessage = { ...prev }
+            delete newMessage[fileName]
+            return newMessage
+          })
+        }, 5000)
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to parse resume')
+      }
+    } catch (error) {
+      console.error('Failed to parse resume:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to parse resume. Please try again.'
+      setParsingStatus(prev => ({ ...prev, [fileName]: 'error' }))
+      setParsingMessage(prev => ({ ...prev, [fileName]: errorMessage }))
+
+      // Clear error message after 5 seconds
+      setTimeout(() => {
+        setParsingStatus(prev => {
+          const newStatus = { ...prev }
+          delete newStatus[fileName]
+          return newStatus
+        })
+        setParsingMessage(prev => {
+          const newMessage = { ...prev }
+          delete newMessage[fileName]
+          return newMessage
+        })
+      }, 5000)
     }
   }
 
@@ -593,6 +674,35 @@ export default function Config() {
           </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-4">
+              {/* Current Resume Display */}
+              {currentResume?.exists && currentResume.sourceFile && (
+                <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                        Currently Active Resume
+                      </h4>
+                      <p className="text-sm text-blue-700 dark:text-blue-300">
+                        <span className="font-medium">{currentResume.sourceFile}</span>
+                      </p>
+                      <div className="flex items-center gap-3 mt-1">
+                        {currentResume.parsedAt && (
+                          <p className="text-xs text-blue-600 dark:text-blue-400">
+                            Parsed on {formatDate(currentResume.parsedAt)}
+                          </p>
+                        )}
+                        {currentResume.textLength && (
+                          <p className="text-xs text-blue-600 dark:text-blue-400">
+                            • {currentResume.textLength.toLocaleString()} characters extracted
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <FileText className="h-8 w-8 text-blue-500 dark:text-blue-400 flex-shrink-0" />
+                  </div>
+                </div>
+              )}
+
               {/* Upload Area */}
               <div className="border-2 border-dashed border-gray-300 dark:border-stone-600 rounded-lg p-6 text-center hover:border-primary-400 dark:hover:border-primary-600 transition-colors">
                 <input
@@ -638,29 +748,58 @@ export default function Config() {
                     Uploaded Resumes
                   </h4>
                   {resumeFiles.map((file, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-3 bg-gray-50 dark:bg-stone-900/50 rounded-lg border border-gray-200 dark:border-stone-700"
-                    >
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <FileText className="h-5 w-5 text-gray-400 dark:text-gray-500 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                            {file.name}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {formatFileSize(file.size)} • {formatDate(file.uploadedAt)}
-                          </p>
+                    <div key={index} className="space-y-2">
+                      <div
+                        className="flex items-center justify-between p-3 bg-gray-50 dark:bg-stone-900/50 rounded-lg border border-gray-200 dark:border-stone-700"
+                      >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <FileText className="h-5 w-5 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                              {file.name}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {formatFileSize(file.size)} • {formatDate(file.uploadedAt)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            onClick={() => handleParseResume(file.name)}
+                            variant="outline"
+                            size="sm"
+                            disabled={parsingStatus[file.name] === 'parsing'}
+                            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 border-blue-300 dark:border-blue-700"
+                          >
+                            {parsingStatus[file.name] === 'parsing' ? (
+                              <>Parsing...</>
+                            ) : (
+                              <>Parse</>
+                            )}
+                          </Button>
+                          <Button
+                            onClick={() => handleDeleteResume(file.name)}
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                      <Button
-                        onClick={() => handleDeleteResume(file.name)}
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      {parsingStatus[file.name] && (
+                        <div
+                          className={`px-3 py-2 rounded-lg text-sm ${
+                            parsingStatus[file.name] === 'success'
+                              ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800'
+                              : parsingStatus[file.name] === 'error'
+                              ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
+                              : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800'
+                          }`}
+                        >
+                          {parsingMessage[file.name]}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
