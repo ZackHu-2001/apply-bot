@@ -1,9 +1,9 @@
 {
   "mcpServers": {
-    "playwright": {
+    "apply-bot-mcp": {
       "command": "npx",
       "args": [
-        "playwright-multitab-enhanced",
+        "apply-bot-mcp",
         "run-mcp-server",
         "--extension"
       ]

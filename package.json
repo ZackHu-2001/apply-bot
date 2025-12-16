@@ -21,6 +21,7 @@
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.294.0",
     "multer": "^2.0.2",
+    "pdf-parse": "^2.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-grid-layout": "^1.5.2",
