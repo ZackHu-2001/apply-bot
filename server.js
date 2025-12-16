@@ -5,6 +5,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import multer from 'multer'
 import net from 'net'
+import { PDFParse } from 'pdf-parse'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -44,6 +45,8 @@ const promptsJsonPath = path.join(__dirname, 'data', 'prompts.json')
 const jobFiltersJsonPath = path.join(__dirname, 'data', 'job-filters.json')
 const logsJsonPath = path.join(__dirname, 'data', 'logs.json')
 const monitoredCompaniesJsonPath = path.join(__dirname, 'data', 'monitored-companies.json')
+const resumeTxtPath = path.join(__dirname, 'data', 'resume.txt')
+const resumeMetaPath = path.join(__dirname, 'data', 'resume-meta.json')
 const dataDir = path.join(__dirname, 'data')
 
 // Ensure data directory exists
@@ -237,23 +240,117 @@ app.delete('/api/resumes/:filename', (req, res) => {
     if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
       return res.status(400).json({ error: 'Invalid filename' })
     }
-    
+
     const filePath = path.join(dataDir, filename)
-    
+
     // Only allow deleting PDF files
     if (!filename.toLowerCase().endsWith('.pdf')) {
       return res.status(400).json({ error: 'Only PDF files can be deleted' })
     }
-    
+
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ error: 'File not found' })
     }
-    
+
     fs.unlinkSync(filePath)
     res.json({ success: true })
   } catch (error) {
     console.error('Error deleting resume:', error)
     res.status(500).json({ error: 'Failed to delete resume' })
+  }
+})
+
+// Parse resume and save to resume.txt
+app.post('/api/resumes/parse/:filename', async (req, res) => {
+  try {
+    const filename = decodeURIComponent(req.params.filename)
+    // Security: prevent directory traversal
+    if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+      return res.status(400).json({ error: 'Invalid filename' })
+    }
+
+    const filePath = path.join(dataDir, filename)
+
+    // Only allow parsing PDF files
+    if (!filename.toLowerCase().endsWith('.pdf')) {
+      return res.status(400).json({ error: 'Only PDF files can be parsed' })
+    }
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'File not found' })
+    }
+
+    console.log('Parsing resume:', filename)
+
+    // Read PDF file buffer
+    const dataBuffer = fs.readFileSync(filePath)
+
+    // Parse the PDF using pdf-parse v2
+    const parser = new PDFParse({ data: dataBuffer })
+    const result = await parser.getText()
+    const text = result.text
+    console.log('Extracted text length:', text.length)
+
+    // Clean up the parser
+    await parser.destroy()
+
+    // Save raw text to resume.txt
+    fs.writeFileSync(resumeTxtPath, text, 'utf-8')
+    console.log('Resume text saved to resume.txt')
+
+    // Save metadata to resume-meta.json
+    const meta = {
+      sourceFile: filename,
+      parsedAt: new Date().toISOString(),
+      textLength: text.length
+    }
+    fs.writeFileSync(resumeMetaPath, JSON.stringify(meta, null, 2), 'utf-8')
+    console.log('Resume metadata saved to resume-meta.json')
+
+    res.json({
+      success: true,
+      sourceFile: filename,
+      textLength: text.length
+    })
+  } catch (error) {
+    console.error('Error parsing resume:', error)
+    res.status(500).json({ error: error.message || 'Failed to parse resume' })
+  }
+})
+
+// Get current parsed resume metadata
+app.get('/api/resume', (req, res) => {
+  try {
+    if (!fs.existsSync(resumeMetaPath)) {
+      return res.json({
+        exists: false,
+        sourceFile: null,
+        parsedAt: null,
+        textLength: 0
+      })
+    }
+
+    const metaData = fs.readFileSync(resumeMetaPath, 'utf-8')
+    const meta = metaData.trim() ? JSON.parse(metaData) : null
+
+    if (!meta) {
+      return res.json({
+        exists: false,
+        sourceFile: null,
+        parsedAt: null,
+        textLength: 0
+      })
+    }
+
+    res.json({
+      exists: true,
+      sourceFile: meta.sourceFile,
+      parsedAt: meta.parsedAt,
+      textLength: meta.textLength
+    })
+  } catch (error) {
+    console.error('Error reading resume metadata:', error)
+    res.status(500).json({ error: 'Failed to read resume metadata' })
   }
 })
 
@@ -266,7 +363,20 @@ app.get('/api/prompts', (req, res) => {
     }
     const data = fs.readFileSync(promptsJsonPath, 'utf-8')
     const json = data.trim() ? JSON.parse(data) : { prompts: [] }
-    res.json(json)
+
+    // Load content from .md files if file field exists
+    const promptsWithContent = json.prompts.map(prompt => {
+      if (prompt.file) {
+        const filePath = path.join(dataDir, prompt.file)
+        if (fs.existsSync(filePath)) {
+          const content = fs.readFileSync(filePath, 'utf-8')
+          return { ...prompt, content }
+        }
+      }
+      return prompt
+    })
+
+    res.json({ prompts: promptsWithContent })
   } catch (error) {
     console.error('Error reading prompts.json:', error)
     res.status(500).json({ error: 'Failed to read prompts.json' })
@@ -277,34 +387,43 @@ app.get('/api/prompts', (req, res) => {
 app.post('/api/prompts', (req, res) => {
   try {
     const { name, content, isDefault } = req.body
-    
+
     if (!name || !content) {
       return res.status(400).json({ error: 'Name and content are required' })
     }
-    
+
     let promptsData = { prompts: [] }
     if (fs.existsSync(promptsJsonPath)) {
       const data = fs.readFileSync(promptsJsonPath, 'utf-8')
       promptsData = data.trim() ? JSON.parse(data) : { prompts: [] }
     }
-    
+
     // If setting as default, unset other defaults
     if (isDefault) {
       promptsData.prompts = promptsData.prompts.map(p => ({ ...p, isDefault: false }))
     }
-    
+
+    const promptId = `prompt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    const fileName = `prompts/${promptId}.md`
+    const filePath = path.join(dataDir, fileName)
+
+    // Save content to .md file
+    fs.writeFileSync(filePath, content, 'utf-8')
+
     const newPrompt = {
-      id: `prompt-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: promptId,
       name,
-      content,
+      file: fileName,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       isDefault: isDefault || false
     }
-    
+
     promptsData.prompts.push(newPrompt)
     fs.writeFileSync(promptsJsonPath, JSON.stringify(promptsData, null, 2), 'utf-8')
-    res.json({ success: true, prompt: newPrompt })
+
+    // Return prompt with content for client
+    res.json({ success: true, prompt: { ...newPrompt, content } })
   } catch (error) {
     console.error('Error creating prompt:', error)
     res.status(500).json({ error: 'Failed to create prompt' })
@@ -316,36 +435,54 @@ app.put('/api/prompts/:id', (req, res) => {
   try {
     const { id } = req.params
     const { name, content, isDefault } = req.body
-    
+
     if (!fs.existsSync(promptsJsonPath)) {
       return res.status(404).json({ error: 'prompts.json not found' })
     }
-    
+
     const data = fs.readFileSync(promptsJsonPath, 'utf-8')
     const promptsData = data.trim() ? JSON.parse(data) : { prompts: [] }
-    
+
     const index = promptsData.prompts.findIndex(p => p.id === id)
     if (index === -1) {
       return res.status(404).json({ error: 'Prompt not found' })
     }
-    
+
     // If setting as default, unset other defaults
     if (isDefault) {
-      promptsData.prompts = promptsData.prompts.map(p => 
+      promptsData.prompts = promptsData.prompts.map(p =>
         p.id === id ? p : { ...p, isDefault: false }
       )
     }
-    
+
+    const prompt = promptsData.prompts[index]
+
+    // Update content in .md file if content is provided
+    if (content !== undefined && prompt.file) {
+      const filePath = path.join(dataDir, prompt.file)
+      fs.writeFileSync(filePath, content, 'utf-8')
+    }
+
+    // Update metadata in prompts.json
     promptsData.prompts[index] = {
-      ...promptsData.prompts[index],
-      name: name !== undefined ? name : promptsData.prompts[index].name,
-      content: content !== undefined ? content : promptsData.prompts[index].content,
-      isDefault: isDefault !== undefined ? isDefault : promptsData.prompts[index].isDefault,
+      ...prompt,
+      name: name !== undefined ? name : prompt.name,
+      isDefault: isDefault !== undefined ? isDefault : prompt.isDefault,
       updatedAt: new Date().toISOString()
     }
-    
+
     fs.writeFileSync(promptsJsonPath, JSON.stringify(promptsData, null, 2), 'utf-8')
-    res.json({ success: true, prompt: promptsData.prompts[index] })
+
+    // Return updated prompt with content
+    const updatedPrompt = { ...promptsData.prompts[index] }
+    if (updatedPrompt.file) {
+      const filePath = path.join(dataDir, updatedPrompt.file)
+      if (fs.existsSync(filePath)) {
+        updatedPrompt.content = fs.readFileSync(filePath, 'utf-8')
+      }
+    }
+
+    res.json({ success: true, prompt: updatedPrompt })
   } catch (error) {
     console.error('Error updating prompt:', error)
     res.status(500).json({ error: 'Failed to update prompt' })
@@ -356,19 +493,29 @@ app.put('/api/prompts/:id', (req, res) => {
 app.delete('/api/prompts/:id', (req, res) => {
   try {
     const { id } = req.params
-    
+
     if (!fs.existsSync(promptsJsonPath)) {
       return res.status(404).json({ error: 'prompts.json not found' })
     }
-    
+
     const data = fs.readFileSync(promptsJsonPath, 'utf-8')
     const promptsData = data.trim() ? JSON.parse(data) : { prompts: [] }
-    
+
     const index = promptsData.prompts.findIndex(p => p.id === id)
     if (index === -1) {
       return res.status(404).json({ error: 'Prompt not found' })
     }
-    
+
+    const prompt = promptsData.prompts[index]
+
+    // Delete the .md file if it exists
+    if (prompt.file) {
+      const filePath = path.join(dataDir, prompt.file)
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath)
+      }
+    }
+
     promptsData.prompts.splice(index, 1)
     fs.writeFileSync(promptsJsonPath, JSON.stringify(promptsData, null, 2), 'utf-8')
     res.json({ success: true })
