@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { ChevronLeft, ChevronRight, X, Filter, ArrowUp, ArrowDown, ExternalLink } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X, Filter, ArrowUp, ArrowDown, ExternalLink, Trash2 } from 'lucide-react'
 
 interface Application {
   company: string
@@ -237,6 +237,40 @@ export default function Applications() {
     setPostedSort(null)
   }
 
+  const handleDelete = async (index: number) => {
+    try {
+      // Find the original application to get its unique identifier
+      const targetApp = filteredAndSortedApplications[index]
+      if (!targetApp) return
+
+      // Create a unique identifier for the application (company + jobTitle + applicationTime)
+      const appIdentifier = `${targetApp.company}-${targetApp.jobTitle}-${targetApp.applicationTime}`
+
+      const response = await fetch(`/api/applied/${appIdentifier}`, {
+        method: 'DELETE',
+      })
+
+      if (response.ok) {
+        // Remove the application from state by finding its original index
+        setApplications(prev => {
+          const originalIndex = prev.findIndex(app =>
+            app.company === targetApp.company &&
+            app.jobTitle === targetApp.jobTitle &&
+            app.applicationTime === targetApp.applicationTime
+          )
+          if (originalIndex !== -1) {
+            return prev.filter((_, i) => i !== originalIndex)
+          }
+          return prev
+        })
+      } else {
+        console.error('Failed to delete application')
+      }
+    } catch (error) {
+      console.error('Error deleting application:', error)
+    }
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -433,24 +467,31 @@ export default function Applications() {
                           </div>
                         )}
                       </TableHead>
+                      <TableHead className="text-sm font-semibold text-gray-700 dark:text-gray-300 text-center w-[80px]">
+                        Actions
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500 dark:text-gray-400">
                       Loading applications...
                     </TableCell>
                   </TableRow>
                 ) : filteredAndSortedApplications.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <TableCell colSpan={7} className="text-center py-8 text-gray-500 dark:text-gray-400">
                       No applications found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  paginatedApplications.map((app, index) => (
-                      <TableRow key={startIndex + index} className="border-gray-100 dark:border-stone-800 hover:bg-gray-50 dark:hover:bg-stone-800/50 transition-colors">
+                  paginatedApplications.map((app, index) => {
+                    // Get the actual index in the filtered and sorted array
+                    const actualIndex = startIndex + index
+
+                    return (
+                      <TableRow key={actualIndex} className="border-gray-100 dark:border-stone-800 hover:bg-gray-50 dark:hover:bg-stone-800/50 transition-colors">
                         <TableCell className="font-medium capitalize text-sm w-[150px]">
                           <div className="truncate" title={app.company}>
                           {app.company}
@@ -497,8 +538,18 @@ export default function Applications() {
                             <span className="text-sm text-gray-400 dark:text-gray-500">—</span>
                           )}
                         </TableCell>
+                        <TableCell className="text-center w-[80px]">
+                          <button
+                            onClick={() => handleDelete(actualIndex)}
+                            className="inline-flex items-center justify-center text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20"
+                            title="Delete application"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </TableCell>
                       </TableRow>
-                  ))
+                    )
+                  })
                 )}
                   </TableBody>
                 </Table>

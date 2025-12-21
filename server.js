@@ -170,6 +170,41 @@ app.post('/api/applied', (req, res) => {
   }
 })
 
+// Delete application from applied.json
+app.delete('/api/applied/:identifier', (req, res) => {
+  try {
+    const identifier = decodeURIComponent(req.params.identifier)
+
+    if (!fs.existsSync(appliedJsonPath)) {
+      return res.status(404).json({ error: 'applied.json not found' })
+    }
+
+    const data = fs.readFileSync(appliedJsonPath, 'utf-8')
+    const applications = data.trim() ? JSON.parse(data) : []
+
+    if (!Array.isArray(applications)) {
+      return res.status(400).json({ error: 'Invalid data format in applied.json' })
+    }
+
+    // Find and remove the application by identifier (company-jobTitle-applicationTime)
+    const index = applications.findIndex(app => {
+      const appIdentifier = `${app.company}-${app.jobTitle}-${app.applicationTime}`
+      return appIdentifier === identifier
+    })
+
+    if (index === -1) {
+      return res.status(404).json({ error: 'Application not found' })
+    }
+
+    applications.splice(index, 1)
+    fs.writeFileSync(appliedJsonPath, JSON.stringify(applications, null, 2), 'utf-8')
+    res.json({ success: true })
+  } catch (error) {
+    console.error('Error deleting application:', error)
+    res.status(500).json({ error: 'Failed to delete application' })
+  }
+})
+
 // Get list of resume files
 app.get('/api/resumes', (req, res) => {
   try {
